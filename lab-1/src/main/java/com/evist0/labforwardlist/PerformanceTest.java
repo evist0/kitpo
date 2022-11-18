@@ -10,10 +10,10 @@ public class PerformanceTest {
     public static void main(String[] args) {
         Random random = new Random();
 
-        for (int i = 1; i <= 5; i++) {
+        for (int i = 1; i <= 10; i++) {
             ForwardList<Integer> forwardList = new ForwardList<>();
 
-            int amount = 100_000 * i;
+            int amount = 50_000 + (50_000 * i);
 
             System.out.println("[" + i + "]" + " Elements amount: " + amount);
 

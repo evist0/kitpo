@@ -3,7 +3,6 @@ package com.evist0.labforwardlist;
 import com.evist0.labforwardlist.factory.ObjectFactory;
 import com.evist0.labforwardlist.factory.ObjectFactoryRegistry;
 import com.evist0.labforwardlist.model.ForwardList;
-import com.evist0.labforwardlist.model.ForwardListWithType;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -93,11 +92,21 @@ public class MainController implements Initializable {
             try (FileInputStream fileInputStream = new FileInputStream(DUMP_FILENAME)) {
                 ObjectInputStream objectInputStream = new ObjectInputStream(fileInputStream);
 
-                ForwardListWithType forwardListWithType = (ForwardListWithType) objectInputStream.readObject();
+                String factoryName = (String) objectInputStream.readObject();
+                selectedTypeProperty.setValue(factoryName);
 
-                selectedTypeProperty.setValue(forwardListWithType.getTypeName());
+                forwardList = new ForwardList();
 
-                forwardList = forwardListWithType.getForwardList();
+                boolean eof = false;
+                while (!eof) {
+                    try {
+                        Object readObject = objectInputStream.readObject();
+                        forwardList.add(readObject);
+                    } catch (EOFException exception) {
+                        eof = true;
+                    }
+                }
+
                 onItemCollectionChanged();
             } catch (IOException | ClassNotFoundException e) {
                 throw new RuntimeException(e);
@@ -107,7 +116,13 @@ public class MainController implements Initializable {
         saveButton.setOnAction(actionEvent -> {
             try (FileOutputStream fileOutputStream = new FileOutputStream(DUMP_FILENAME)) {
                 ObjectOutputStream objectOutputStream = new ObjectOutputStream(fileOutputStream);
-                objectOutputStream.writeObject(new ForwardListWithType(selectedTypeProperty.getValue(), forwardList));
+
+                String factoryName = getObjectFactory().getObjectName();
+                objectOutputStream.writeObject(factoryName);
+
+                for (Object i : forwardList) {
+                    objectOutputStream.writeObject(i);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }

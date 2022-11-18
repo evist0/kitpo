@@ -1,13 +1,12 @@
 package com.evist0.labforwardlist.model;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
-public class ForwardList<T> implements Serializable, Iterable {
-    private class Node implements Serializable {
+public class ForwardList<T> implements Iterable {
+    private class Node {
         private final T value;
         private Node next;
 
