@@ -140,21 +140,34 @@ public class ForwardList<T> implements Serializable, Iterable {
     }
 
     private Node sortedMerge(Node a, Node b, Comparator comparator) {
-        Node result;
+        Node merged = new Node(null);
+        Node temp = merged;
 
-        if (a == null)
-            return b;
-        if (b == null)
-            return a;
+        while (a != null && b != null) {
+            if (comparator.compare(a.value, b.value) < 0) {
+                temp.next = a;
+                a = a.next;
+            } else {
+                temp.next = b;
+                b = b.next;
+            }
 
-        if (comparator.compare(a.value, b.value) < 0) {
-            result = a;
-            result.next = sortedMerge(a.next, b, comparator);
-        } else {
-            result = b;
-            result.next = sortedMerge(a, b.next, comparator);
+            temp = temp.next;
         }
-        return result;
+
+        while (a != null) {
+            temp.next = a;
+            a = a.next;
+            temp = temp.next;
+        }
+
+        while (b != null) {
+            temp.next = b;
+            b = b.next;
+            temp = temp.next;
+        }
+
+        return merged.next;
     }
 
     private Node getMiddle(Node head) {
