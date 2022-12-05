@@ -4,16 +4,16 @@ import com.hamaddo.labforwardlist.factory.ObjectFactory
 
 import java.util.Comparator
 
-class IntegerFactory extends ObjectFactory {
+private class IntegerFactory extends ObjectFactory {
   override def parse(input: String): Integer = {
-    return Integer.parseInt(input);
+    Integer.parseInt(input)
   }
 
   override def getObjectName: String = {
-    return "Integer"
+    "Integer"
   }
 
-  override def getComparator: Comparator[Integer] = {
-    return Comparator.comparingInt((o) => o.asInstanceOf[Integer])
+  override def getComparator: Comparator[Object] = {
+    Comparator.comparingInt(o => o.asInstanceOf[Integer])
   }
 }

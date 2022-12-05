@@ -24,3 +24,4 @@ object LabApplication extends JFXApp3 {
     }
   }
 }
+
