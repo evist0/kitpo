@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="ru.nstu.lab3.MainController">
+    <GridPane AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.topAnchor="0.0">
+        <padding>
+            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0"/>
+        </padding>
+        <columnConstraints>
+            <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="253.0" prefWidth="292.0"/>
+            <ColumnConstraints maxWidth="164.0" minWidth="125.0" prefWidth="125.0"/>
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints/>
+        </rowConstraints>
+        <AnchorPane>
+            <ListView fx:id="itemListView" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                      AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+        </AnchorPane>
+        <VBox spacing="20.0" GridPane.columnIndex="1">
+            <GridPane.margin>
+                <Insets left="20.0"/>
+            </GridPane.margin>
+            <AnchorPane>
+                <ChoiceBox fx:id="typeChoiceBox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                           AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            </AnchorPane>
+            <VBox spacing="5.0">
+                <TextField fx:id="inputTextField"/>
+                <AnchorPane>
+                    <Button onAction="#onAddButtonClick" mnemonicParsing="false" text="Add"
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                </AnchorPane>
+                <AnchorPane>
+                    <Button onAction="#onInsertButtonClick" mnemonicParsing="false" text="Insert"
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                </AnchorPane>
+            </VBox>
+            <AnchorPane>
+                <Button onAction="#onRemoveButtonClick" mnemonicParsing="false" text="Remove"
+                        AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                        AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            </AnchorPane>
+            <AnchorPane>
+                <Button onAction="#onSortButtonClick" mnemonicParsing="false" text="Sort"
+                        AnchorPane.bottomAnchor="0.0"
+                        AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+                        AnchorPane.topAnchor="0.0"/>
+            </AnchorPane>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="5.0">
+                <AnchorPane>
+                    <Button onAction="#onLoadButtonClick" mnemonicParsing="false" text="Load"
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                </AnchorPane>
+                <AnchorPane>
+                    <Button onAction="#onSaveButtonClick" mnemonicParsing="false" text="Save"
+                            AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                            AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+                </AnchorPane>
+            </VBox>
+        </VBox>
+    </GridPane>
+</AnchorPane>
