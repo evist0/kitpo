@@ -1,7 +1,7 @@
 package ru.nstu.lab3.model
 
 class ForwardList<T> : Iterable<T> {
-    private inner class Node {
+    inner class Node {
         val value: T
         var next: Node?
 
@@ -29,6 +29,14 @@ class ForwardList<T> : Iterable<T> {
 
     constructor(value: T) {
         add(value)
+    }
+
+    fun getRoot(): Node? {
+        return root
+    }
+
+    fun isEmpty(): Boolean {
+        return this.size == 0
     }
 
     fun add(value: T) {
@@ -78,6 +86,7 @@ class ForwardList<T> : Iterable<T> {
             }
 
             root = root!!.next
+            _size -= 1;
             return
         }
 
@@ -106,6 +115,15 @@ class ForwardList<T> : Iterable<T> {
         }
 
         return arrayList
+    }
+
+    fun printList(description: String) {
+        System.out.print(description)
+        this.forEach() { item ->
+            System.out.print(item)
+            if (item != this.last()) System.out.print("->")
+            else System.out.println()
+        }
     }
 
     fun mergeSort(comparator: Comparator<in T>): ForwardList<T> {
@@ -150,7 +168,7 @@ class ForwardList<T> : Iterable<T> {
         return merged
     }
 
-    private fun sublist(from: Node?, to: Node?): ForwardList<T> {
+     fun sublist(from: Node?, to: Node?): ForwardList<T> {
         val result = ForwardList<T>()
         var temp: Node? = from
 
@@ -170,7 +188,7 @@ class ForwardList<T> : Iterable<T> {
         return result
     }
 
-    private fun getMiddle(head: Node?): Node? {
+    fun getMiddle(head: Node?): Node? {
         if (head == null) {
             return null
         }
@@ -186,7 +204,7 @@ class ForwardList<T> : Iterable<T> {
         return slow
     }
 
-    private fun getEnd(): Node {
+     fun getEnd(): Node {
         if (root == null) {
             throw RuntimeException()
         }

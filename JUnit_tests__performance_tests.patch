@@ -1,0 +1,378 @@
+Subject: [PATCH] JUnit tests + performance tests
+---
+Index: lab-3/src/main/kotlin/ru/nstu/lab3/ForwardListPerformanceTest.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/lab-3/src/main/kotlin/ru/nstu/lab3/ForwardListPerformanceTest.kt b/lab-3/src/main/kotlin/ru/nstu/lab3/ForwardListPerformanceTest.kt
+new file mode 100644
+--- /dev/null	(date 1672158019989)
++++ b/lab-3/src/main/kotlin/ru/nstu/lab3/ForwardListPerformanceTest.kt	(date 1672158019989)
+@@ -0,0 +1,36 @@
++package ru.nstu.lab3
++
++import ru.nstu.lab3.factory.ObjectFactoryRegistry
++import ru.nstu.lab3.model.ForwardList
++import java.util.*
++import kotlin.Comparator
++
++class ListPerformanceTest {
++    companion object {
++        @JvmStatic
++        fun test(count: Int) {
++            var list: ForwardList<Int> = getFilledList(count)
++            val intComparator: Comparator<Int> = Comparator() { a, b ->
++                when {
++                    (a == b) -> 0
++                    (a < b) -> -1
++                    else -> 1
++                }
++            }
++            val startSortTime = System.nanoTime()
++            list = list.mergeSort(intComparator)
++            val stopSortTime = System.nanoTime() - startSortTime
++
++            println("Время сортировки " + count + " случайных элементов типа INTEGER: " + stopSortTime / 1000000 + " мс")
++        }
++
++        @JvmStatic
++        fun getFilledList(count: Int): ForwardList<Int> {
++            var list: ForwardList<Int> = ForwardList();
++            while (list.size < count) {
++                list.add((java.lang.Math.random() * 100).toInt())
++            }
++            return list
++        }
++    }
++}
+\ No newline at end of file
+Index: .idea/kitpo.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/kitpo.iml b/.idea/kitpo.iml
+--- a/.idea/kitpo.iml	(revision 3cb33a4abad9b8304359a3e2ca7bb44c14475d4f)
++++ b/.idea/kitpo.iml	(date 1671962802355)
+@@ -3,7 +3,7 @@
+   <component name="NewModuleRootManager" inherit-compiler-output="true">
+     <exclude-output />
+     <content url="file://$MODULE_DIR$" />
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="16" jdkType="JavaSDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file
+Index: .idea/codeStyles/Project.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/codeStyles/Project.xml b/.idea/codeStyles/Project.xml
+--- a/.idea/codeStyles/Project.xml	(revision 3cb33a4abad9b8304359a3e2ca7bb44c14475d4f)
++++ b/.idea/codeStyles/Project.xml	(date 1671962552543)
+@@ -1,7 +1,13 @@
+ <component name="ProjectCodeStyleConfiguration">
+   <code_scheme name="Project" version="173">
++    <JetCodeStyleSettings>
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </JetCodeStyleSettings>
+     <ScalaCodeStyleSettings>
+       <option name="MULTILINE_STRING_CLOSING_QUOTES_ON_NEW_LINE" value="true" />
+     </ScalaCodeStyleSettings>
++    <codeStyleSettings language="kotlin">
++      <option name="CODE_STYLE_DEFAULTS" value="KOTLIN_OFFICIAL" />
++    </codeStyleSettings>
+   </code_scheme>
+ </component>
+\ No newline at end of file
+Index: lab-2/src/main/scala/com/hamaddo/labforwardlist/PerformanceTest.scala
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/lab-2/src/main/scala/com/hamaddo/labforwardlist/PerformanceTest.scala b/lab-2/src/main/scala/com/hamaddo/labforwardlist/PerformanceTest.scala
+--- a/lab-2/src/main/scala/com/hamaddo/labforwardlist/PerformanceTest.scala	(revision 3cb33a4abad9b8304359a3e2ca7bb44c14475d4f)
++++ b/lab-2/src/main/scala/com/hamaddo/labforwardlist/PerformanceTest.scala	(date 1672152965672)
+@@ -34,4 +34,6 @@
+       System.out.println()
+     }
+   }
++
++
+ }
+\ No newline at end of file
+Index: lab-3/src/main/kotlin/ru/nstu/lab3/model/ForwardList.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/lab-3/src/main/kotlin/ru/nstu/lab3/model/ForwardList.kt b/lab-3/src/main/kotlin/ru/nstu/lab3/model/ForwardList.kt
+--- a/lab-3/src/main/kotlin/ru/nstu/lab3/model/ForwardList.kt	(revision 3cb33a4abad9b8304359a3e2ca7bb44c14475d4f)
++++ b/lab-3/src/main/kotlin/ru/nstu/lab3/model/ForwardList.kt	(date 1672090003327)
+@@ -1,7 +1,7 @@
+ package ru.nstu.lab3.model
+ 
+ class ForwardList<T> : Iterable<T> {
+-    private inner class Node {
++    inner class Node {
+         val value: T
+         var next: Node?
+ 
+@@ -31,6 +31,14 @@
+         add(value)
+     }
+ 
++    fun getRoot(): Node? {
++        return root
++    }
++
++    fun isEmpty(): Boolean {
++        return this.size == 0
++    }
++
+     fun add(value: T) {
+         if (root == null) {
+             root = Node(value)
+@@ -78,6 +86,7 @@
+             }
+ 
+             root = root!!.next
++            _size -= 1;
+             return
+         }
+ 
+@@ -108,6 +117,15 @@
+         return arrayList
+     }
+ 
++    fun printList(description: String) {
++        System.out.print(description)
++        this.forEach() { item ->
++            System.out.print(item)
++            if (item != this.last()) System.out.print("->")
++            else System.out.println()
++        }
++    }
++
+     fun mergeSort(comparator: Comparator<in T>): ForwardList<T> {
+         // Если пустой список — возвращаем новый пустой список
+         if (root == null) return ForwardList()
+@@ -150,7 +168,7 @@
+         return merged
+     }
+ 
+-    private fun sublist(from: Node?, to: Node?): ForwardList<T> {
++     fun sublist(from: Node?, to: Node?): ForwardList<T> {
+         val result = ForwardList<T>()
+         var temp: Node? = from
+ 
+@@ -170,7 +188,7 @@
+         return result
+     }
+ 
+-    private fun getMiddle(head: Node?): Node? {
++    fun getMiddle(head: Node?): Node? {
+         if (head == null) {
+             return null
+         }
+@@ -186,7 +204,7 @@
+         return slow
+     }
+ 
+-    private fun getEnd(): Node {
++     fun getEnd(): Node {
+         if (root == null) {
+             throw RuntimeException()
+         }
+Index: lab-3/src/test/kotlin/ru/nstu/lab3/model/ForwardListTest.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/lab-3/src/test/kotlin/ru/nstu/lab3/model/ForwardListTest.kt b/lab-3/src/test/kotlin/ru/nstu/lab3/model/ForwardListTest.kt
+new file mode 100644
+--- /dev/null	(date 1672159393748)
++++ b/lab-3/src/test/kotlin/ru/nstu/lab3/model/ForwardListTest.kt	(date 1672159393748)
+@@ -0,0 +1,144 @@
++package ru.nstu.lab3.model
++
++import org.junit.jupiter.api.Test
++
++import org.junit.jupiter.api.Assertions.*
++
++class ForwardListTest {
++
++    @Test
++    fun testListSizeAfterAddingElement() {
++        var forwardList: ForwardList<Int> = ForwardList();
++
++        forwardList.add(5);
++        forwardList.add(6);
++        forwardList.add(7);
++
++        var actualSize = forwardList.size;
++        var expectedSize = 3;
++
++        assertEquals(actualSize, expectedSize);
++    }
++
++    @Test
++    fun testListEmptyOnCreation() {
++        var forwardList: ForwardList<Int> = ForwardList();
++        assertTrue(forwardList.isEmpty());
++    }
++
++    @Test
++    fun testListNotEmptyAfterInsertion() {
++        var forwardList: ForwardList<Int> = ForwardList();
++        forwardList.add(1);
++        assertFalse(forwardList.isEmpty())
++    }
++
++    @Test
++    fun testListEmptyAfterDelete() {
++        var forwardList: ForwardList<Int> = ForwardList();
++        forwardList.add(10);
++        forwardList.remove(0)
++        assertTrue(forwardList.isEmpty())
++    }
++
++    @Test
++    fun testListCorrectAfterInsertion() {
++        var forwardList: ForwardList<Int> = ForwardList();
++
++        forwardList.add(10);
++        forwardList.add(20);
++        forwardList.add(30);
++
++        var forwardListIterator = forwardList.iterator();
++        var actualRootValue = forwardListIterator.next()
++        var actualSecondValue = forwardListIterator.next()
++        var actualThirdValue = forwardListIterator.next()
++
++        var expectedRootValue = 10;
++        var expectedSecondValue = 20;
++        var expectedThirdValue = 30;
++
++        assertEquals(actualRootValue, expectedRootValue);
++        assertEquals(actualSecondValue, expectedSecondValue);
++        assertEquals(actualThirdValue, expectedThirdValue);
++    }
++
++    @Test
++    fun testListSort() {
++        var listToSort: ForwardList<Int> = ForwardList();
++        var sortedList: ForwardList<Int> = ForwardList();
++
++        // Инициализация компаратора
++        var intComparator: Comparator<Int> = Comparator() { a, b ->
++            when {
++                (a == b) -> 0
++                (a < b) -> -1
++                else -> 1
++            }
++        }
++
++        // Заполнение списка значениями в случайном порядке
++        listToSort.add(6);
++        listToSort.add(5);
++        listToSort.add(12);
++        listToSort.add(10);
++        listToSort.add(9);
++        listToSort.add(1);
++
++        // Заполнение списка с ожидаемым порядком значений
++        sortedList.add(1);
++        sortedList.add(5);
++        sortedList.add(6);
++        sortedList.add(9);
++        sortedList.add(10);
++        sortedList.add(12);
++
++        listToSort.printList(description = "Unsorted: ")
++
++        // Выполнение сортировки
++        listToSort = listToSort.mergeSort(intComparator);
++        listToSort.printList(description = "Sorted: ")
++
++        assertTrue(listToSort.toList() == sortedList.toList())
++    }
++
++    @Test
++    fun testGetMiddleForSort(){
++        var forwardList: ForwardList<Int> = ForwardList();
++
++        for (i in 1..5) { forwardList.add(i) }
++
++        var actualMiddleValue = forwardList.getMiddle(forwardList.getRoot())!!.value
++        var expectedMiddleValue = 3
++
++        assertEquals(expectedMiddleValue, actualMiddleValue)
++    }
++
++    @Test
++    fun testSublistsForSort(){
++        var forwardList: ForwardList<Int> = ForwardList();
++        for (i in 1..6) { forwardList.add(i) }
++
++        // define actual
++        var middleNode = forwardList.getMiddle(forwardList.getRoot())
++        var endNode = forwardList.getEnd()
++
++        val actualLeftSublist = forwardList.sublist(forwardList.getRoot(), middleNode)
++        val actualRightSublist = forwardList.sublist(middleNode?.next, endNode)
++
++        // define expected
++        var expectedLeftSublist: ForwardList<Int> = ForwardList()
++        var expectedRightSublist: ForwardList<Int> = ForwardList()
++
++        expectedLeftSublist.add(1)
++        expectedLeftSublist.add(2)
++        expectedLeftSublist.add(3)
++
++        expectedRightSublist.add(4)
++        expectedRightSublist.add(5)
++        expectedRightSublist.add(6)
++
++        assertEquals(expectedLeftSublist.toList(), actualLeftSublist.toList())
++        assertEquals(expectedRightSublist.toList(), actualRightSublist.toList())
++    }
++}
+\ No newline at end of file
+Index: lab-3/src/main/kotlin/ru/nstu/lab3/LabApplication.kt
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/lab-3/src/main/kotlin/ru/nstu/lab3/LabApplication.kt b/lab-3/src/main/kotlin/ru/nstu/lab3/LabApplication.kt
+--- a/lab-3/src/main/kotlin/ru/nstu/lab3/LabApplication.kt	(revision 3cb33a4abad9b8304359a3e2ca7bb44c14475d4f)
++++ b/lab-3/src/main/kotlin/ru/nstu/lab3/LabApplication.kt	(date 1672157994698)
+@@ -5,6 +5,7 @@
+ import javafx.scene.Scene
+ import javafx.stage.Stage
+ import java.io.IOException
++import ru.nstu.lab3.ListPerformanceTest
+ 
+ class LabApplication : Application() {
+     @Throws(IOException::class)
+@@ -21,5 +22,15 @@
+ }
+ 
+ fun main() {
+-    Application.launch(LabApplication::class.java)
++    ListPerformanceTest.test(100000)
++    ListPerformanceTest.test(150000)
++    ListPerformanceTest.test(200000)
++    ListPerformanceTest.test(250000)
++    ListPerformanceTest.test(300000)
++    ListPerformanceTest.test(350000)
++    ListPerformanceTest.test(400000)
++    ListPerformanceTest.test(450000)
++    ListPerformanceTest.test(500000)
++
++    //Application.launch(LabApplication::class.java)
+ }
+\ No newline at end of file

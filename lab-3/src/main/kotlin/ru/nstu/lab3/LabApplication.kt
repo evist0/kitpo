@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader
 import javafx.scene.Scene
 import javafx.stage.Stage
 import java.io.IOException
+import ru.nstu.lab3.ListPerformanceTest
 
 class LabApplication : Application() {
     @Throws(IOException::class)
@@ -21,5 +22,15 @@ class LabApplication : Application() {
 }
 
 fun main() {
-    Application.launch(LabApplication::class.java)
+    ListPerformanceTest.test(100000)
+    ListPerformanceTest.test(150000)
+    ListPerformanceTest.test(200000)
+    ListPerformanceTest.test(250000)
+    ListPerformanceTest.test(300000)
+    ListPerformanceTest.test(350000)
+    ListPerformanceTest.test(400000)
+    ListPerformanceTest.test(450000)
+    ListPerformanceTest.test(500000)
+
+    //Application.launch(LabApplication::class.java)
 }
