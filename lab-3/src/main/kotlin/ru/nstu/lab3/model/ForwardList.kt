@@ -18,6 +18,8 @@ class ForwardList<T> : Iterable<T> {
 
     private var root: Node? = null
 
+    private var last: Node? = null
+
     private var _size = 0
     public val size: Int
         get() {
@@ -31,6 +33,17 @@ class ForwardList<T> : Iterable<T> {
         add(value)
     }
 
+    constructor(oldRoot: ForwardList<T>.Node?) {
+        var previous = oldRoot
+
+        while (previous?.next != null) {
+            add(previous.value)
+            previous = previous.next
+        }
+
+        add(previous!!.value)
+    }
+
     fun getRoot(): Node? {
         return root
     }
@@ -42,17 +55,14 @@ class ForwardList<T> : Iterable<T> {
     fun add(value: T) {
         if (root == null) {
             root = Node(value)
+            last = root
             _size += 1
             return
         }
 
-        var previous = root
+        last?.next = Node(value)
+        last = last?.next
 
-        while (previous?.next != null) {
-            previous = previous.next
-        }
-
-        previous?.next = Node(value)
         _size += 1
     }
 
@@ -133,17 +143,13 @@ class ForwardList<T> : Iterable<T> {
         // Если один элемент - возвращаем новый список на один элемент
         if (size < 2) return ForwardList(root!!.value)
 
-        // Находим центральный узел
-        val middle: Node? = getMiddle(root)
-        // Находим конечный узел
-        val end = getEnd()
+        if (size <= 2) return merge(ForwardList(root!!.value), ForwardList(root!!.next!!.value), comparator)
 
         // Рекурсивно получаем подсписки
-        val left = this.sublist(root, middle).mergeSort(comparator)
-        val right = this.sublist(middle?.next, end).mergeSort(comparator)
+        val (left, right) = this.split()
 
         // Сливаем подсписки
-        return merge(left, right, comparator)
+        return merge(left.mergeSort(comparator), right.mergeSort(comparator), comparator)
     }
 
     private fun merge(a: ForwardList<T>, b: ForwardList<T>, comparator: Comparator<in T>): ForwardList<T> {
@@ -168,7 +174,46 @@ class ForwardList<T> : Iterable<T> {
         return merged
     }
 
-     fun sublist(from: Node?, to: Node?): ForwardList<T> {
+    fun split(): Pair<ForwardList<T>, ForwardList<T>> {
+        if (root == null) {
+            throw NullPointerException()
+        }
+
+        var leftRoot: Node? = null;
+        var leftTemp: Node? = null;
+
+        var rightRoot: Node? = null;
+        var rightTemp: Node? = null;
+
+        var currentIndex = 0
+        forEach { element ->
+            run {
+                if (currentIndex % 2 == 0) {
+                    if (leftRoot == null) {
+                        leftRoot = Node(element)
+                        leftTemp = leftRoot
+                    } else {
+                        leftTemp?.next = Node(element)
+                        leftTemp = leftTemp?.next
+                    }
+                } else {
+                    if (rightRoot == null) {
+                        rightRoot = Node(element)
+                        rightTemp = rightRoot
+                    } else {
+                        rightTemp?.next = Node(element)
+                        rightTemp = rightTemp?.next
+                    }
+                }
+
+                currentIndex++
+            }
+        }
+
+        return Pair(ForwardList(leftRoot!!), ForwardList(rightRoot!!))
+    }
+
+    fun sublist(from: Node?, to: Node?): ForwardList<T> {
         val result = ForwardList<T>()
         var temp: Node? = from
 
@@ -204,7 +249,7 @@ class ForwardList<T> : Iterable<T> {
         return slow
     }
 
-     fun getEnd(): Node {
+    fun getEnd(): Node {
         if (root == null) {
             throw RuntimeException()
         }
